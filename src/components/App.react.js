@@ -28,7 +28,7 @@ const App = () => {
 
   return (
     <AuthContext.Provider value={{ isAuth, logout, updateToken }}>
-      <BrowserRouter>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Routes>
           <Route
             path="/"

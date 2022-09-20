@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/personal-finance-client/static/js/main.bd822984.js",
+    "index.html": "/personal-finance-client/index.html",
+    "main.bd822984.js.map": "/personal-finance-client/static/js/main.bd822984.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.bd822984.js"
+  ]
+}

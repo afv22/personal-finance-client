@@ -38,32 +38,33 @@ const theme = createTheme();
 
 export default ({ toggleForm }) => {
   const [registerUser, _] = useMutation(REGISTER_USER);
-
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password1, setPassword1] = useState("");
-  const [password2, setPassword2] = useState("");
-
   const [passwordsMismatch, setPasswordsMismatch] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    password1: "",
+    password2: "",
+  });
+
+  const handleChange = (event) => {
+    event.preventDefault();
+    var newFormData = { ...formData };
+    newFormData[event.target.name] = event.target.value;
+    setFormData(newFormData);
+    setPasswordsMismatch(newFormData.password1 !== newFormData.password2);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const response = await registerUser({
-      variables: {
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        username: username,
-        password1: password1,
-        password2: password2,
-      },
+      variables: formData,
     });
 
-    if (response.error) {
-      console.log(response.error);
+    if (response.errors) {
+      console.error(response.errors);
       return;
     }
 
@@ -72,11 +73,9 @@ export default ({ toggleForm }) => {
 
   useEffect(() => {
     setSubmitDisabled(
-      [firstName, lastName, username, email, password1, password2].includes(
-        ""
-      ) || passwordsMismatch
+      Object.values(formData).includes("") || passwordsMismatch
     );
-  }, [firstName, lastName, username, email, password1, password2]);
+  }, [formData]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -105,14 +104,13 @@ export default ({ toggleForm }) => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  autoComplete="given-name"
                   name="firstName"
                   required
                   fullWidth
                   id="firstName"
                   label="First Name"
                   autoFocus
-                  onChange={(event) => setFirstName(event.target.value)}
+                  onChange={handleChange}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -122,8 +120,7 @@ export default ({ toggleForm }) => {
                   id="lastName"
                   label="Last Name"
                   name="lastName"
-                  autoComplete="family-name"
-                  onChange={(event) => setLastName(event.target.value)}
+                  onChange={handleChange}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -133,8 +130,7 @@ export default ({ toggleForm }) => {
                   id="username"
                   label="Username"
                   name="username"
-                  autoComplete="username"
-                  onChange={(event) => setUsername(event.target.value)}
+                  onChange={handleChange}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -144,8 +140,7 @@ export default ({ toggleForm }) => {
                   id="email"
                   label="Email Address"
                   name="email"
-                  autoComplete="email"
-                  onChange={(event) => setEmail(event.target.value)}
+                  onChange={handleChange}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -156,11 +151,7 @@ export default ({ toggleForm }) => {
                   label="Password"
                   type="password"
                   id="password1"
-                  autoComplete="new-password"
-                  onChange={(event) => {
-                    setPassword1(event.target.value);
-                    setPasswordsMismatch(password2 !== event.target.value);
-                  }}
+                  onChange={handleChange}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -172,12 +163,8 @@ export default ({ toggleForm }) => {
                   label="Re-enter Password"
                   type="password"
                   id="password2"
-                  autoComplete="new-password"
                   color={passwordsMismatch ? "error" : "info"}
-                  onChange={(event) => {
-                    setPassword2(event.target.value);
-                    setPasswordsMismatch(password1 !== event.target.value);
-                  }}
+                  onChange={handleChange}
                 />
               </Grid>
               {passwordsMismatch ? (

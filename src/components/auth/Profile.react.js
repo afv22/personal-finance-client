@@ -7,9 +7,7 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { IconButton, MenuItem, Select } from "@mui/material";
 import { ArrowBack, Person } from "@mui/icons-material";
-import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import Loading from "components/applet/Loading.react";
 import { useNavigate } from "react-router-dom";
@@ -43,6 +41,12 @@ const styles = {
   backButton: { top: 20, left: 20 },
   avatar: { m: 1, bgcolor: "secondary.main" },
   formBox: { mt: 3 },
+  profileBox: {
+    marginTop: 8,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
   submitButton: { mt: 3, mb: 2 },
 };
 
@@ -57,36 +61,24 @@ export default () => {
   });
 
   const handleChange = (event) => {
+    event.preventDefault();
     var newFormData = { ...formData };
-    switch (event.target.name) {
-      case "firstName":
-        newFormData.firstName = event.target.value;
-        break;
-      case "lastName":
-        newFormData.lastName = event.target.value;
-        break;
-      case "state":
-        newFormData.state = event.target.value;
-    }
+    newFormData[event.target.name] = event.target.value;
     setFormData(newFormData);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
     updateUser({
-      variables: {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        state: formData.state,
-      },
+      variables: formData,
     });
   };
 
   useEffect(() => {
-    if (!FetchUserDataResponse.data) {
-      return;
+    if (FetchUserDataResponse.data) {
+      setFormData(FetchUserDataResponse.data.whoami);
     }
-    setFormData(FetchUserDataResponse.data.whoami);
-  }, [FetchUserDataResponse.data]);
+  }, [FetchUserDataResponse]);
 
   if (FetchUserDataResponse.loading) {
     return <Loading />;
@@ -105,18 +97,10 @@ export default () => {
       </IconButton>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
+        <Box sx={styles.profileBox}>
           <Avatar sx={styles.avatar}>
             <Person />
           </Avatar>
-          <Typography component="h1" variant="h5"></Typography>
           <Box sx={styles.formBox}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>

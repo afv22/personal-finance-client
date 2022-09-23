@@ -7,28 +7,57 @@ import { TokenContext } from "./ApolloWrapper.react";
 import CashFlow from "./cashflow/CashFlow.react";
 import ProfilePageReact from "./auth/ProfilePage.react";
 import Loading from "./applet/Loading.react";
+import { gql, useMutation } from "@apollo/client";
+
+const VERIFY_TOKEN = gql`
+  mutation VerifyToken($token: String!) {
+    verifyToken(token: $token) {
+      payload
+    }
+  }
+`;
 
 const App = () => {
   const { token, setToken } = useContext(TokenContext);
+  const verifyToken = useMutation(VERIFY_TOKEN)[0];
   const [loadingToken, setLoadingToken] = useState(true);
+  const [isAuth, setIsAuth] = useState(false);
 
   const updateToken = (newToken) => {
     localStorage.setItem(AUTH_TOKEN, newToken);
     setToken(newToken);
   };
 
-  // TODO: Make this not shitty
-  const isAuth = token && token !== "null" && token !== "";
-
   const logout = () => {
     updateToken(null);
   };
 
+  const checkIsAuth = async (newToken) => {
+    if (!newToken || newToken === null || newToken === "null") {
+      setIsAuth(false);
+      return;
+    }
+    const verifyTokenResponse = await verifyToken({
+      variables: { token: newToken },
+    });
+    setIsAuth(verifyTokenResponse.data.verifyToken.payload ? true : false);
+  };
+
   useEffect(() => {
-    const newToken = localStorage.getItem(AUTH_TOKEN);
-    setToken(newToken);
-    setLoadingToken(false);
+    const func = async () => {
+      const newToken = localStorage.getItem(AUTH_TOKEN);
+      if (newToken) {
+        setToken(newToken);
+        await checkIsAuth(newToken);
+      }
+      setLoadingToken(false);
+    };
+    func();
   }, []);
+
+  useEffect(() => {
+    checkIsAuth(token);
+  }, [token]);
 
   return loadingToken ? (
     <Loading />

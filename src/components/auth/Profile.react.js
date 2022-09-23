@@ -39,7 +39,12 @@ const FETCH_USER_DATA = gql`
   }
 `;
 
-const theme = createTheme();
+const styles = {
+  backButton: { top: 20, left: 20 },
+  avatar: { m: 1, bgcolor: "secondary.main" },
+  formBox: { mt: 3 },
+  submitButton: { mt: 3, mb: 2 },
+};
 
 export default () => {
   const navigate = useNavigate();
@@ -90,11 +95,11 @@ export default () => {
   }
 
   return (
-    <ThemeProvider theme={theme}>
+    <React.Fragment>
       <IconButton
         onClick={() => navigate("/")}
         size="large"
-        sx={{ top: 10, left: 10 }}
+        sx={styles.backButton}
       >
         <ArrowBack />
       </IconButton>
@@ -108,11 +113,11 @@ export default () => {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <Avatar sx={styles.avatar}>
             <Person />
           </Avatar>
           <Typography component="h1" variant="h5"></Typography>
-          <Box sx={{ mt: 3 }}>
+          <Box sx={styles.formBox}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -161,7 +166,7 @@ export default () => {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={styles.submitButton}
               onClick={handleSubmit}
             >
               Save
@@ -169,6 +174,6 @@ export default () => {
           </Box>
         </Box>
       </Container>
-    </ThemeProvider>
+    </React.Fragment>
   );
 };

@@ -11,14 +11,13 @@ const FETCH_USER_DATA = gql`
       username
       firstName
       lastName
-      state
     }
   }
 `;
 
 const SideMenu = ({ closeDrawer }) => {
   const { logout } = useContext(AuthContext);
-  const { loading, data } = useQuery(FETCH_USER_DATA);
+  const { loading, data, error } = useQuery(FETCH_USER_DATA);
   const navigate = useNavigate();
 
   const MenuButton = ({ buttonType, title, onClick }) => (
@@ -40,6 +39,10 @@ const SideMenu = ({ closeDrawer }) => {
     </Box>
   );
 
+  if (error) {
+    console.error(error);
+  }
+
   return (
     <Box
       sx={{ width: 250, textAlign: "center" }}
@@ -50,6 +53,8 @@ const SideMenu = ({ closeDrawer }) => {
         <Box sx={{ marginTop: 10 }}>
           <BeatLoader />
         </Box>
+      ) : error ? (
+        <p>Error!</p>
       ) : (
         <React.Fragment>
           <Box

@@ -8,14 +8,17 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { Select, MenuItem } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { gql, useMutation } from "@apollo/client";
+import StateNames from "./utils/StateNames";
 
 const REGISTER_USER = gql`
   mutation REGISTER_USER(
     $firstName: String!
     $lastName: String!
     $email: String!
+    $state: String!
     $username: String!
     $password1: String!
     $password2: String!
@@ -24,6 +27,7 @@ const REGISTER_USER = gql`
       firstName: $firstName
       lastName: $lastName
       email: $email
+      state: $state
       username: $username
       password1: $password1
       password2: $password2
@@ -45,6 +49,7 @@ export default ({ toggleForm }) => {
     lastName: "",
     username: "",
     email: "",
+    state: "",
     password1: "",
     password2: "",
   });
@@ -142,6 +147,26 @@ export default ({ toggleForm }) => {
                   name="email"
                   onChange={handleChange}
                 />
+              </Grid>
+              <Grid item xs={12}>
+                <Select
+                  fullWidth
+                  required
+                  name="state"
+                  id="state"
+                  label="Home State"
+                  value={formData.state}
+                  onChange={handleChange}
+                >
+                  {StateNames.map((state) => (
+                    <MenuItem
+                      value={state.abbreviation}
+                      key={state.abbreviation}
+                    >
+                      {state.name}
+                    </MenuItem>
+                  ))}
+                </Select>
               </Grid>
               <Grid item xs={12}>
                 <TextField

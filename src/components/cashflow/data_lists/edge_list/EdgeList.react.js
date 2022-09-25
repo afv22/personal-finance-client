@@ -4,7 +4,7 @@ import EdgeModal from "./EdgeModal.react";
 import { getColumns, getRows } from "./utils/processEdges";
 import { processRowUpdate, onProcessRowUpdateError } from "./utils/rowUpdate";
 import DataList from "../DataList.react";
-import { GET_DATA } from "../CashFlow.react";
+import { GET_DATA } from "../../CashFlow.react";
 
 const UPDATE_EDGE = gql`
   mutation UpdateEdge(

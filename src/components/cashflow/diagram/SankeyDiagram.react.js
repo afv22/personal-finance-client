@@ -36,9 +36,6 @@ const translate = (accounts, incomes, edges) => {
       values.push(edge.value);
     }
   });
-
-  console.log(labels, sources, targets);
-
   return [labels, sources, targets, values];
 };
 

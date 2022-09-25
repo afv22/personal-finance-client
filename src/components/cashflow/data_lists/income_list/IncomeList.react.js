@@ -1,11 +1,11 @@
 import React from "react";
 import { useMutation } from "@apollo/client";
-import { getRows, getColumns } from "./utils/processNodes";
+import { getRows, getColumns } from "./utils/processIncomes";
 import { processRowUpdate, onProcessRowUpdateError } from "./utils/rowUpdate";
 import DataList from "../DataList.react";
 import { GET_DATA } from "components/cashflow/CashFlow.react";
 
-export default ({ nodes, Modal, nodeName, updateMutation }) => {
+const IncomeList = ({ nodes, Modal, nodeName, updateMutation }) => {
   const [updateNode, _] = useMutation(updateMutation, {
     refetchQueries: [{ query: GET_DATA }, "GetData"],
   });
@@ -20,3 +20,5 @@ export default ({ nodes, Modal, nodeName, updateMutation }) => {
     />
   );
 };
+
+export default IncomeList;

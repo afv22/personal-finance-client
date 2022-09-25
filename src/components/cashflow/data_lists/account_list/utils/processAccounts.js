@@ -1,10 +1,19 @@
 import React from "react";
-import DeleteNodeButton from "../DeleteNodeButton.react";
+import DeleteRowButton from "../../DeleteRowButton.react";
+import { gql } from "@apollo/client";
 
 var formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
 });
+
+const DELETE_ACCOUNT = gql`
+  mutation DeleteAccount($id: ID!) {
+    deleteAccount(id: $id) {
+      success
+    }
+  }
+`;
 
 const getRows = (nodes) => {
   return nodes.map((node) => {
@@ -18,11 +27,11 @@ const getRows = (nodes) => {
 
 const getColumns = () => {
   return [
-    { field: "id", headerName: "ID", width: 90, hide: true },
-    { field: "name", headerName: "Account name", width: 180, editable: true },
+    { field: "id", width: 90, hide: true },
+    { field: "name", headerName: "Bank Account", width: 180, editable: true },
     {
       field: "value",
-      headerName: "Value",
+      headerName: "Net Value",
       width: 120,
       editable: true,
       valueFormatter: (params) => {
@@ -36,7 +45,9 @@ const getColumns = () => {
       field: "delete",
       type: "actions",
       width: 60,
-      getActions: (params) => [<DeleteNodeButton params={params} />],
+      getActions: (params) => [
+        <DeleteRowButton params={params} mutation={DELETE_ACCOUNT} />,
+      ],
     },
   ];
 };

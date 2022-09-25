@@ -27,7 +27,11 @@ export default ({
         processRowUpdate={processRowUpdate}
         onProcessRowUpdateError={onProcessRowUpdateError}
       />
-      <Button variant="contained" onClick={() => setModalOpen(true)}>
+      <Button
+        variant="contained"
+        onClick={() => setModalOpen(true)}
+        sx={{ marginY: 1 }}
+      >
         {buttonTitle}
       </Button>
       <Modal open={modalOpen} setOpen={setModalOpen} />

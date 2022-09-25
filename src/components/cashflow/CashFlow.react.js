@@ -1,12 +1,13 @@
 import React, { createContext } from "react";
 import SankeyDiagram from "./diagram/SankeyDiagram.react";
-import AccountList from "./account_list/AccountList.react";
+import AccountList from "./data_lists/account_list/AccountList.react";
 import { gql, useQuery } from "@apollo/client";
 import { Grid, Typography } from "@mui/material";
-import EdgeList from "./edge_list/EdgeList.react";
+import EdgeList from "./data_lists/edge_list/EdgeList.react";
 import Loading from "components/applet/Loading.react";
-import AccountModalReact from "./account_list/AccountModal.react";
-import IncomeModalReact from "./IncomeModal.react";
+import AccountModalReact from "./data_lists/account_list/AccountModal.react";
+import IncomeModalReact from "./data_lists/income_list/IncomeModal.react";
+import IncomeList from "./data_lists/income_list/IncomeList.react";
 
 const GET_DATA = gql`
   query GetData {
@@ -80,7 +81,7 @@ const CashFlow = () => {
         </Typography>
         <SankeyDiagram data={data} />
         <Grid item>
-          <AccountList
+          <IncomeList
             nodes={data.incomes}
             Modal={IncomeModalReact}
             nodeName="Income Source"

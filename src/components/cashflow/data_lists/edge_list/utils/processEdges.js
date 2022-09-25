@@ -1,7 +1,16 @@
 import React from "react";
-import DeleteEdgeButton from "../DeleteEdgeButton.react";
+import DeleteRowButton from "../../DeleteRowButton.react";
+import { gql } from "@apollo/client";
 
 const edgeTypes = ["Percentage", "Amount", "Balance"];
+
+const DELETE_EDGE = gql`
+  mutation DeleteEdge($id: ID!) {
+    deleteEdge(id: $id) {
+      success
+    }
+  }
+`;
 
 const getColumns = () => {
   return [
@@ -45,7 +54,9 @@ const getColumns = () => {
       field: "delete",
       type: "actions",
       width: 60,
-      getActions: (params) => [<DeleteEdgeButton params={params} />],
+      getActions: (params) => [
+        <DeleteRowButton params={params} mutation={DELETE_EDGE} />,
+      ],
     },
   ];
 };

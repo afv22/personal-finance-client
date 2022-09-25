@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/personal-finance-client/static/js/main.96e8133a.js",
+    "main.js": "/personal-finance-client/static/js/main.d76ff80a.js",
     "index.html": "/personal-finance-client/index.html",
-    "main.96e8133a.js.map": "/personal-finance-client/static/js/main.96e8133a.js.map"
+    "main.d76ff80a.js.map": "/personal-finance-client/static/js/main.d76ff80a.js.map"
   },
   "entrypoints": [
-    "static/js/main.96e8133a.js"
+    "static/js/main.d76ff80a.js"
   ]
 }

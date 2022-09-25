@@ -38,8 +38,8 @@ const FETCH_USER_DATA = gql`
 `;
 
 const styles = {
-  backButton: { top: 20, left: 20 },
   avatar: { m: 1, bgcolor: "secondary.main" },
+  backButton: { top: 20, left: 20 },
   formBox: { mt: 3 },
   profileBox: {
     marginTop: 8,
@@ -50,7 +50,7 @@ const styles = {
   submitButton: { mt: 3, mb: 2 },
 };
 
-export default () => {
+const Profile = () => {
   const navigate = useNavigate();
   const updateUser = useMutation(UPDATE_USER)[0];
   const FetchUserDataResponse = useQuery(FETCH_USER_DATA);
@@ -161,3 +161,5 @@ export default () => {
     </React.Fragment>
   );
 };
+
+export default Profile;

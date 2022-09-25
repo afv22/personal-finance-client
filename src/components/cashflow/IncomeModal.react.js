@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 import Modal, { ModalButton } from "components/cashflow/Modal.react";
 
-const CREATE_NODE = gql`
-  mutation CreateAccount($name: String!) {
-    createAccount(data: { name: $name }) {
-      account {
+const CREATE_INCOME = gql`
+  mutation CreateIncome($name: String!, $value: Float!) {
+    createIncome(data: { name: $name, value: $value }) {
+      income {
         id
       }
     }
@@ -14,38 +14,63 @@ const CREATE_NODE = gql`
 `;
 
 export default ({ open, setOpen, getDataQuery }) => {
-  const [name, setName] = useState("");
-  const [createNode, _] = useMutation(CREATE_NODE, {
+  const [formData, setFormData] = useState({
+    name: "",
+    value: "",
+  });
+  const [createNode, _] = useMutation(CREATE_INCOME, {
     refetchQueries: [{ query: getDataQuery }, "GetData"],
   });
 
   const closeModal = () => {
-    setName("");
+    setFormData({
+      name: "",
+      value: "",
+    });
     setOpen(false);
   };
 
+  const handleChange = (event) => {
+    event.preventDefault();
+    var newFormData = { ...formData };
+    newFormData[event.target.name] = event.target.value;
+    setFormData(newFormData);
+  };
+
   const handleSubmit = () => {
-    if (name === "") {
+    if (formData.name === "" || formData.value === "") {
       return;
     }
     createNode({
       variables: {
-        name: name,
+        name: formData.name,
+        value: parseFloat(formData.value !== "" ? formData.value : 0),
       },
     });
     closeModal();
   };
 
   return (
-    <Modal open={open} closeModal={closeModal} title="Add Account">
+    <Modal open={open} closeModal={closeModal} title="Add Income">
       <Grid container direction="column" alignItems="center" spacing={2}>
         <Grid item>
           <TextField
+            name="name"
             id="create-node-name-input"
             label="Name"
             variant="outlined"
-            onChange={(event) => setName(event.target.value)}
-            value={name}
+            onChange={handleChange}
+            value={formData.name}
+          />
+        </Grid>
+        <Grid item>
+          <TextField
+            name="value"
+            id="create-node-name-input"
+            label="Value"
+            variant="outlined"
+            onChange={handleChange}
+            value={formData.value}
           />
         </Grid>
         <Grid item>

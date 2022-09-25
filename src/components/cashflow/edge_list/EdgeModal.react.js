@@ -13,7 +13,11 @@ import Modal, { ModalButton } from "../Modal.react";
 
 const CREATE_EDGE_FORM_GET_ACCOUNT_NAMES = gql`
   query CreateEdgeFromGetAccountNames {
-    userNodes {
+    accounts {
+      id
+      name
+    }
+    incomes {
       id
       name
     }
@@ -100,11 +104,13 @@ export default ({ open, setOpen, getDataQuery }) => {
     return;
   }
 
-  const accountsMenu = getAccountNamesResponse.data.userNodes.map((num) => (
-    <MenuItem value={num.id} key={num.id}>
-      {num.name}
-    </MenuItem>
-  ));
+  const accountsMenu = getAccountNamesResponse.data.accounts
+    .concat(getAccountNamesResponse.data.incomes)
+    .map((num) => (
+      <MenuItem value={num.id} key={num.id}>
+        {num.name}
+      </MenuItem>
+    ));
 
   return (
     <Modal open={open} closeModal={closeModal} title="Add Edge">

@@ -1,12 +1,8 @@
 const processRowUpdate = async (newRow, updateNode) => {
   const response = await updateNode({
-    variables: {
-      id: newRow.id,
-      name: newRow.name,
-      initialValue: newRow.initialValue,
-    },
+    variables: newRow,
   });
-  return response.data.updateNode.node;
+  return response.data.updateNode;
 };
 
 const onProcessRowUpdateError = (error) => {

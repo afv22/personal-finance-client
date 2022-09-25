@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { AUTH_TOKEN } from "../constants";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import AppletPage from "./applet/AppletPage.react";
 import AuthContext from "./auth/AuthContext";
 import { TokenContext } from "./ApolloWrapper.react";
@@ -32,16 +32,19 @@ const App = () => {
     updateToken(null);
   };
 
-  const checkIsAuth = async (newToken) => {
-    if (!newToken || newToken === null || newToken === "null") {
-      setIsAuth(false);
-      return;
-    }
-    const verifyTokenResponse = await verifyToken({
-      variables: { token: newToken },
-    });
-    setIsAuth(verifyTokenResponse.data.verifyToken.payload ? true : false);
-  };
+  const checkIsAuth = useCallback(
+    async (newToken) => {
+      if (!newToken || newToken === null || newToken === "null") {
+        setIsAuth(false);
+        return;
+      }
+      const verifyTokenResponse = await verifyToken({
+        variables: { token: newToken },
+      });
+      setIsAuth(verifyTokenResponse.data.verifyToken.payload ? true : false);
+    },
+    [verifyToken]
+  );
 
   useEffect(() => {
     const func = async () => {
@@ -53,11 +56,11 @@ const App = () => {
       setLoadingToken(false);
     };
     func();
-  }, []);
+  }, [checkIsAuth, setToken]);
 
   useEffect(() => {
     checkIsAuth(token);
-  }, [token]);
+  }, [checkIsAuth, token]);
 
   return loadingToken ? (
     <Loading />
@@ -66,10 +69,11 @@ const App = () => {
       <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Routes>
           <Route
+            exact
             path="/"
             element={<AppletPage applet={<CashFlow />} title="Cash Flow" />}
           />
-          <Route path="profile" element={<ProfilePageReact />} />
+          <Route path="/profile" element={<ProfilePageReact />} />
         </Routes>
       </BrowserRouter>
     </AuthContext.Provider>

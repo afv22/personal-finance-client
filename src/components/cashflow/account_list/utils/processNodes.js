@@ -1,12 +1,17 @@
 import React from "react";
 import DeleteNodeButton from "../DeleteNodeButton.react";
 
+var formatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
+
 const getRows = (nodes) => {
   return nodes.map((node) => {
     return {
       id: node.id,
       name: node.name,
-      initialValue: node.initialValue,
+      value: node.netValue ? node.netValue : node.value,
     };
   });
 };
@@ -16,10 +21,16 @@ const getColumns = () => {
     { field: "id", headerName: "ID", width: 90, hide: true },
     { field: "name", headerName: "Account name", width: 180, editable: true },
     {
-      field: "initialValue",
-      headerName: "Initial Value",
+      field: "value",
+      headerName: "Value",
       width: 120,
       editable: true,
+      valueFormatter: (params) => {
+        if (params.value == null) {
+          return "";
+        }
+        return formatter.format(params.value);
+      },
     },
     {
       field: "delete",

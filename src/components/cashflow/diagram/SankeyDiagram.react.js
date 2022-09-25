@@ -4,21 +4,24 @@ import Plot from "react-plotly.js";
 /**
  * Translate Nodes and Edges to a format readable by the Plotly diagram
  */
-const translate = (nodes, edges) => {
+const translate = (accounts, incomes, edges) => {
   var idToIndex = {};
   var labels = ["Total Income", "Taxes"];
   var sources = [];
   var targets = [];
   var values = [];
 
-  nodes.forEach((node, index) => {
+  incomes.forEach((node, index) => {
     labels.push(node.name);
     idToIndex[node.id] = index + 2;
-    if (node.initialValue > 0) {
-      sources.push(0);
-      targets.push(index + 2);
-      values.push(node.initialValue);
-    }
+    sources.push(0);
+    targets.push(index + 2);
+    values.push(node.value);
+  });
+
+  accounts.forEach((node, index) => {
+    labels.push(node.name);
+    idToIndex[node.id] = index + 2 + incomes.length;
   });
 
   edges.forEach((edge) => {
@@ -34,6 +37,8 @@ const translate = (nodes, edges) => {
     }
   });
 
+  console.log(labels, sources, targets);
+
   return [labels, sources, targets, values];
 };
 
@@ -45,8 +50,9 @@ export default ({ data }) => {
 
   useEffect(() => {
     const [newLabels, newSources, newTargets, newValues] = translate(
-      data.userNodes,
-      data.userEdges
+      data.accounts,
+      data.incomes,
+      data.edges
     );
     setLabels(newLabels);
     setSources(newSources);

@@ -5,25 +5,52 @@ import { gql, useQuery } from "@apollo/client";
 import { Grid, Typography } from "@mui/material";
 import EdgeList from "./edge_list/EdgeList.react";
 import Loading from "components/applet/Loading.react";
+import AccountModalReact from "./account_list/AccountModal.react";
+import IncomeModalReact from "./IncomeModal.react";
 
 const GET_DATA = gql`
   query GetData {
-    userNodes {
+    incomes {
       id
       name
-      initialValue
+      value
+    }
+    accounts {
+      id
+      name
+      value
       netValue
     }
-    userEdges {
+    edges {
       id
       sourceId
       targetId
       value
       taxes
       isTaxable
-      sourcePercentage
       sourceAmount
+      sourcePercentage
       sourceRemainingBalance
+    }
+  }
+`;
+
+const UPDATE_INCOME = gql`
+  mutation UpdateIncome($id: ID!, $name: String!, $value: Float!) {
+    updateIncome(id: $id, data: { name: $name, value: $value }) {
+      income {
+        id
+      }
+    }
+  }
+`;
+
+const UPDATE_ACCOUNT = gql`
+  mutation UpdateAccount($id: ID!, $name: String!) {
+    updateAccount(id: $id, data: { name: $name }) {
+      account {
+        id
+      }
     }
   }
 `;
@@ -53,7 +80,20 @@ const CashFlow = () => {
         </Typography>
         <SankeyDiagram data={data} />
         <Grid item>
-          <AccountList nodes={data.userNodes} />
+          <AccountList
+            nodes={data.incomes}
+            Modal={IncomeModalReact}
+            nodeName="Income Source"
+            updateMutation={UPDATE_INCOME}
+          />
+        </Grid>
+        <Grid item>
+          <AccountList
+            nodes={data.accounts}
+            Modal={AccountModalReact}
+            nodeName="Bank Account"
+            updateMutation={UPDATE_ACCOUNT}
+          />
         </Grid>
         <Grid item>
           <EdgeList data={data} />
